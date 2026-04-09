@@ -1,15 +1,18 @@
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
-
+import { Link } from 'react-router-dom'
 export default function Nav() {
+    const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
     return(
-        <Navbar bg="dark" variant="dark">
-            <Container>
-                <Navbar.Brand href="#home">Bank Statement Analyzer</Navbar.Brand>
-            </Container>
-            <Container className="d-flex justify-content-end">
-                <Navbar.Brand href="#home">UserName</Navbar.Brand>
-            </Container>
-        </Navbar>
+        <nav className="hp-nav">
+          <a className="hp-nav-brand" href="#">
+            <span className="brand-dot" />
+            BankAnalyzer
+          </a>
+          <ul className="hp-nav-links">
+            <li><a href="#" onClick={() => scrollTo('home')}>Home</a></li>
+            <li><a href="#" onClick={() => scrollTo('services')}>Services</a></li>
+            <li><Link to="/login" className="nav-btn">Sign In</Link></li>
+            <li><Link to="/signup" className="nav-btn nav-btn-accent">Get Started</Link></li>
+          </ul>
+        </nav>
     )
 }

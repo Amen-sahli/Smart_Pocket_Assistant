@@ -1,6 +1,3 @@
-import React from 'react';
-import { Container, Button } from 'react-bootstrap';
-
 export default function Main() {
     return(
         <div className="d-flex flex-column text-white " style={{ minHeight: '100vh' }}>
