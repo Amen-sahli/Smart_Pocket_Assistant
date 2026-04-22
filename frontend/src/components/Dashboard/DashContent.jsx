@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { FiUploadCloud, FiTrendingUp, FiTrendingDown, FiDollarSign } from 'react-icons/fi'
+import uploadCSV from '../../api/transactions'
 
 const transactions = [
   { date: '2026-04-01', desc: 'Monthly Salary', amount: '+$3,000', type: 'income' },
@@ -13,6 +14,18 @@ const transactions = [
 export default function DashContent() {
 
     const [fileName, setFileName] = useState(null)
+
+    async function handleUpload() {
+    const token = localStorage.getItem("token");
+
+    try {
+      await uploadCSV(fileName, token);
+      alert("Upload successful!");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
 
     return(
         <main className="db-content">
@@ -37,7 +50,7 @@ export default function DashContent() {
                     onChange={(e) => setFileName(e.target.files[0]?.name || null)}
                   />
                 </label>
-                <button className="upload-btn">
+                <button className="upload-btn" onClick={handleUpload}>
                   <FiUploadCloud size={14} /> Upload
                 </button>
               </div>

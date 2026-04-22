@@ -1,5 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+
+from .services.save_to_db import save_transactions_to_db
 from .services.pdf_extractor import extract_text_from_pdf
 from .services.parser import extract_transactions_table
 from .services.exporter import export_transactions_to_csv,export_transaction_to_excel
@@ -34,19 +36,25 @@ def upload_statement(request):
     try:
         extracted_text = extract_text_from_pdf(uploaded_file)
         transactions = extract_transactions_table(uploaded_file)
+        saved=save_transactions_to_db(transactions, request.user)
+
+
 
         return Response({
             "status": "success",
             "message": "PDF received and text extracted successfully",
+            "saved": saved,
             "filename": file_name,
             "text_preview": extracted_text[:1000],
             "transaction_count": len(transactions),
             "transactions": transactions
         }, status=200)
+    
 
     except Exception as e:
         return Response({
             "status": "error",
+            "warning": "Some transactions could not be saved to the database",
             "message": "Error while extracting text from PDF",
             "details": str(e)
         }, status=500)
