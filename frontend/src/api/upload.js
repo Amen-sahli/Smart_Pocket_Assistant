@@ -1,4 +1,4 @@
-export async function uploadCSV(file, token) {
+export default async function upload(file, token) {
   const formData = new FormData();
   formData.append("file", file);
 

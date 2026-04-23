@@ -1,19 +1,14 @@
-export default async function uploadCSV(file, token) {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const response = await fetch("http://localhost:8000/api/transactions/upload/", {
-    method: "POST",
+export default async function getTransactions (token) {
+  const response = await fetch("http://localhost:8000/api/statements/list/", {
     headers: {
-      "Authorization": "Bearer " + token
-    },
-    body: formData
+      Authorization: "Bearer " + token
+    }
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || "Upload failed");
+    throw new Error("Failed to fetch transactions");
   }
 
   return data;

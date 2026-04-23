@@ -1,26 +1,52 @@
 import { useState } from 'react'
 import { FiUploadCloud, FiTrendingUp, FiTrendingDown, FiDollarSign } from 'react-icons/fi'
-import uploadCSV from '../../api/transactions'
+import upload from '../../api/upload'
+import { useEffect } from "react";
+import  getTransactions  from "../../api/transactions"
 
-const transactions = [
-  { date: '2026-04-01', desc: 'Monthly Salary', amount: '+$3,000', type: 'income' },
-  { date: '2026-04-02', desc: 'Grocery Store', amount: '-$150', type: 'expense' },
-  { date: '2026-04-03', desc: 'Electricity Bill', amount: '-$80', type: 'expense' },
-  { date: '2026-04-05', desc: 'Freelance Payment', amount: '+$1,200', type: 'income' },
-  { date: '2026-04-06', desc: 'Internet Service', amount: '-$45', type: 'expense' },
-]
+//const transactions = [
+//  { date: '2026-04-01', desc: 'Monthly Salary', amount: '+$3,000', type: 'income' },
+//  { date: '2026-04-02', desc: 'Grocery Store', amount: '-$150', type: 'expense' },
+//  { date: '2026-04-03', desc: 'Electricity Bill', amount: '-$80', type: 'expense' },
+//  { date: '2026-04-05', desc: 'Freelance Payment', amount: '+$1,200', type: 'income' },
+//  { date: '2026-04-06', desc: 'Internet Service', amount: '-$45', type: 'expense' },
+//]
 
 
 export default function DashContent() {
 
-    const [fileName, setFileName] = useState(null)
+    const [transactions, setTransactions] = useState([])
+    const [file, setFile] = useState(null)
+
+
+  useEffect(() => {
+      const token = localStorage.getItem("token");
+
+      async function fetchData() {
+      try {
+        const data = await getTransactions(token);
+        setTransactions(data);
+      } catch (err) {
+         console.error(err);
+      }
+      }
+
+  fetchData();
+}, []);
+
+
+
 
     async function handleUpload() {
     const token = localStorage.getItem("token");
-
+    
     try {
-      await uploadCSV(fileName, token);
+      await upload(file, token);
       alert("Upload successful!");
+      setFile(null);
+      const data = await getTransactions(token);
+      setTransactions(data);
+
     } catch (error) {
       alert(error.message);
     }
@@ -36,18 +62,18 @@ export default function DashContent() {
                 <div className="upload-icon-wrap"><FiUploadCloud /></div>
                 <div>
                   <div className="upload-title">Upload Bank Statement</div>
-                  <div className="upload-sub">{fileName || 'CSV or PDF supported — drag & drop or browse'}</div>
+                  <div className="upload-sub">{file?.name || 'CSV or PDF supported — drag & drop or browse'}</div>
                 </div>
               </div>
               <div className="upload-right">
                 <label className="file-input-label">
                   <FiUploadCloud size={14} />
-                  {fileName ? 'Change file' : 'Browse file'}
+                  {file?.name ? 'Change file' : 'Browse file'}
                   <input
                     type="file"
                     className="file-input"
                     accept=".csv,.pdf"
-                    onChange={(e) => setFileName(e.target.files[0]?.name || null)}
+                    onChange={(e) => setFile(e.target.files[0] || null)}
                   />
                 </label>
                 <button className="upload-btn" onClick={handleUpload}>
@@ -108,7 +134,7 @@ export default function DashContent() {
                       <td>{tx.date}</td>
                       <td className="td-desc">{tx.desc}</td>
                       <td className={tx.type === 'income' ? 'amount-positive' : 'amount-negative'}>
-                        {tx.amount}
+                        {tx.amount > 0 ? `+$${tx.amount}` : `-$${Math.abs(tx.amount)}`}
                       </td>
                       <td>
                         <span className={`badge ${tx.type === 'income' ? 'badge-income' : 'badge-expense'}`}>

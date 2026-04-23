@@ -1,17 +1,21 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
+from rest_framework.decorators import api_view, permission_classes
 from .services.save_to_db import save_transactions_to_db
 from .services.pdf_extractor import extract_text_from_pdf
 from .services.parser import extract_transactions_table
 from .services.exporter import export_transactions_to_csv,export_transaction_to_excel
 from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+from .models import Transaction
+
+
 @api_view(['GET'])
 def test_api(request):
     return Response({
         "message": "Backend is working"
     })
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def upload_statement(request):
     print(request.FILES)
 
@@ -93,4 +97,20 @@ def export_excel(request):
     response['Content-Disposition'] = 'attachment; filename="transactions.xlsx"'
 
     return response
-    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_transactions(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+
+    data = [
+        {
+            "date": t.date,
+            "desc": t.description,
+            "amount": t.amount,
+            "type": "income" if t.amount > 0 else "expense"
+        }
+        for t in transactions[:5]
+    ]
+
+    return Response(data)
