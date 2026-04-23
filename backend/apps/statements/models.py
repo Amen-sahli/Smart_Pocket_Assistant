@@ -8,6 +8,7 @@ class Transaction(models.Model):
     description = models.TextField()
     amount = models.FloatField()
     type = models.CharField(max_length=100, blank=True)
+    category = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.amount}"

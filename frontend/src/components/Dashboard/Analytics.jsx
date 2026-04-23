@@ -11,65 +11,15 @@ import {
   FiCpu, FiChevronRight, FiArrowUp, FiArrowDown, FiStar
 } from 'react-icons/fi'
 
+import { useEffect } from "react";
+import { getAnalytics } from "../../api/transactions";
+
+
 /* ─── PALETTE ─────────────────────────────────────────── */
 const C = { c1:'#01161E', c2:'#124559', c3:'#598392', c4:'#AEC3B0', c5:'#EFF6E0' }
 const PIE_COLORS = ['#598392','#AEC3B0','#7faab5','#3d6b77','#c9dbc7','#2a4f5e','#8fbfa0']
 
 /* ─── HARD-CODED DATA ─────────────────────────────────── */
-const summaryCards = [
-  { label:'Net Balance',    value:'$8,340',  change:'+12.4%', up:true,  icon:<FiDollarSign/>,  accent:C.c3  },
-  { label:'Total Income',   value:'$14,200', change:'+8.2%',  up:true,  icon:<FiTrendingUp/>,  accent:C.c4  },
-  { label:'Total Expenses', value:'$5,860',  change:'+3.1%',  up:false, icon:<FiTrendingDown/>,accent:'#e07070'},
-  { label:'Avg. Daily Spend',value:'$194',   change:'-5.6%',  up:true,  icon:<FiCreditCard/>,  accent:C.c4  },
-]
-
-const pieData = [
-  { name:'Food & Dining',   value:1420 },
-  { name:'Housing',         value:1800 },
-  { name:'Transport',       value:540  },
-  { name:'Entertainment',   value:320  },
-  { name:'Health',          value:480  },
-  { name:'Shopping',        value:760  },
-  { name:'Utilities',       value:340  },
-]
-
-const spendingLine = [
-  { month:'Oct', spending:3200, budget:4000 },
-  { month:'Nov', spending:4100, budget:4000 },
-  { month:'Dec', spending:5200, budget:4000 },
-  { month:'Jan', spending:3800, budget:4200 },
-  { month:'Feb', spending:3100, budget:4200 },
-  { month:'Mar', spending:4600, budget:4200 },
-  { month:'Apr', spending:2900, budget:4200 },
-]
-
-const categoryBar = [
-  { category:'Food',    spent:1420, avg:1100 },
-  { category:'Housing', spent:1800, avg:1800 },
-  { category:'Transport',spent:540, avg:650  },
-  { category:'Health',  spent:480, avg:400  },
-  { category:'Shopping',spent:760, avg:900  },
-  { category:'Utils',   spent:340, avg:300  },
-]
-
-const incomeVsExpenses = [
-  { month:'Oct', income:3800, expenses:3200 },
-  { month:'Nov', income:4200, expenses:4100 },
-  { month:'Dec', income:4200, expenses:5200 },
-  { month:'Jan', income:5100, expenses:3800 },
-  { month:'Feb', income:4200, expenses:3100 },
-  { month:'Mar', income:4200, expenses:4600 },
-  { month:'Apr', income:4200, expenses:2900 },
-]
-
-const topTransactions = [
-  { desc:'Rent Payment',       amount:-1800, category:'Housing',      date:'Apr 01' },
-  { desc:'Freelance Project',  amount:+3200, category:'Income',       date:'Apr 03' },
-  { desc:'Grocery — Carrefour',amount:-310,  category:'Food',         date:'Apr 05' },
-  { desc:'Salary',             amount:+4200, category:'Income',       date:'Apr 05' },
-  { desc:'Apple Subscription', amount:-49,   category:'Entertainment',date:'Apr 07' },
-  { desc:'Electricity Bill',   amount:-180,  category:'Utilities',    date:'Apr 08' },
-]
 
 const insights = [
   { type:'warning', title:'High dining spend',        body:'You spent 29% more on Food & Dining this month compared to your 3-month average. Consider meal prepping to reduce costs.',        icon:'🍽️' },
@@ -215,6 +165,33 @@ Format each item as: { "type": "positive"|"warning"|"tip", "icon": "<single emoj
 
 /* ─── MAIN COMPONENT ─────────────────────────────────── */
 export default function Analytics() {
+
+  const formatMoney = (num) => Number(num || 0).toLocaleString()
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  async function fetchData() {
+    try {
+      const res = await getAnalytics(token);
+      setData(res);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  fetchData();
+}, []);
+
+  const summaryCards = [ { label:'Net Balance', value:'$' + formatMoney(data?.summary.balance)>0 ? formatMoney(data?.summary.balance) : '0', change:'+12.4%', up:true, icon:<FiDollarSign/>, accent:C.c3 }, { label:'Total Income', value:'$' + formatMoney(data?.summary.income), change:'+8.2%', up:true, icon:<FiTrendingUp/>, accent:C.c4 }, { label:'Total Expenses', value:'$' + formatMoney(data?.summary.expenses), change:'+3.1%', up:false, icon:<FiTrendingDown/>,accent:'#e07070'}, { label:'Avg. Daily Spend',value:'$' + formatMoney(data?.summary.avg_daily), change:'-5.6%', up:true, icon:<FiCreditCard/>, accent:C.c4 }, ]
+  const pieData = data?.pie || []
+  const spendingLine = data?.line || []
+  const categoryBar = data?.bar || []
+  const incomeVsExpenses = data?.area || []
+  const topTransactions = data?.top || []
+
   return (
     <>
       <div className="an-root">

@@ -7,6 +7,8 @@ from .services.exporter import export_transactions_to_csv,export_transaction_to_
 from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated
 from .models import Transaction
+from collections import defaultdict
+from datetime import datetime
 
 
 @api_view(['GET'])
@@ -108,9 +110,190 @@ def get_transactions(request):
             "date": t.date,
             "desc": t.description,
             "amount": t.amount,
-            "type": "income" if t.amount > 0 else "expense"
+            "type": "income" if t.type == "credit" else "expense",
+            "category": t.category
         }
         for t in transactions[:5]
     ]
 
     return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_stats(request):
+    transactions = Transaction.objects.filter(user=request.user)
+    total_income = sum(t.amount for t in transactions if t.type == "credit")
+    total_expense = sum(t.amount for t in transactions if t.type == "debit")
+    balance = sum(t.amount if t.type == "credit" else -t.amount for t in transactions)
+    return Response({
+        "income": total_income,
+        "expenses": total_expense,
+        "balance": balance
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def analytics_data(request):
+    user = request.user
+    transactions = Transaction.objects.filter(user=user)
+
+    # ===== SUMMARY =====
+    total_income = sum(t.amount for t in transactions if t.type == "credit")
+    total_expenses = sum(t.amount for t in transactions if t.type == "debit")
+
+    balance = total_income - total_expenses
+    avg_daily = total_expenses / 30 if total_expenses else 0
+
+    summary = {
+        "balance": balance,
+        "income": total_income,
+        "expenses": total_expenses,
+        "avg_daily": avg_daily
+    }
+
+    # ===== CATEGORY PIE (ONLY EXPENSES) =====
+    category_totals = defaultdict(float)
+
+    for t in transactions:
+        if t.type == "debit":
+            category_totals[t.category] += t.amount
+
+    #two decimal places for frontend display
+    pie_data = [
+        {"name": k, "value": round(v, 2)}
+        for k, v in category_totals.items()
+    ]
+
+    # ===== MONTHLY DATA =====
+    monthly = defaultdict(lambda: {"income": 0, "expenses": 0})
+
+    for t in transactions:
+        month = t.date.strftime("%b")
+
+        if t.type == "credit":
+            monthly[month]["income"] += t.amount
+        else:
+            monthly[month]["expenses"] += t.amount
+
+    months = sorted(monthly.keys(), key=lambda m: datetime.strptime(m, "%b"))
+
+    # ===== INCOME VS EXPENSES =====
+    income_vs_expenses = [
+        {
+            "month": m,
+            "income": monthly[m]["income"],
+            "expenses": monthly[m]["expenses"]
+        }
+        for m in months
+    ]
+
+    # ===== SPENDING LINE =====
+    spending_line = [
+        {
+            "month": m,
+            "spending": round(monthly[m]["expenses"], 2),
+            "budget": round(monthly[m]["expenses"] * 1.2, 2)  #  dynamic
+        }
+        for m in months
+    ]
+
+    # ===== CATEGORY BAR =====
+    category_bar = [
+        {
+            "category": k,
+            "spent": round(v, 2),
+            "avg": round(v * 0.8, 2)  # placeholder
+        }
+        for k, v in category_totals.items()
+    ]
+
+    # ===== TOP TRANSACTIONS =====
+    top_transactions = sorted(
+        transactions,
+        key=lambda t: round(t.amount, 2),
+        reverse=True
+    )[:6]
+
+    top_data = [
+        {
+            "desc": t.description,
+            "amount": t.amount if t.type == "credit" else -t.amount,  # 👈 IMPORTANT
+            "category": t.category,
+            "date": t.date.strftime("%b %d")
+        }
+        for t in top_transactions
+    ]
+
+    return Response({
+        "summary": summary,
+        "pie": pie_data,
+        "line": spending_line,
+        "bar": category_bar,
+        "area": income_vs_expenses,
+        "top": top_data
+    })
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_transaction(request):
+    user = request.user
+
+    data = request.data
+
+    date = data.get("date")
+    description = data.get("desc")
+    amount = data.get("amount")
+    tx_type = data.get("type")  # "income" or "expense"
+    category = data.get("category", "Other")
+
+    # ===== VALIDATION =====
+    if not description or not amount or not date:
+        return Response({
+            "error": "Missing required fields"
+        }, status=400)
+
+    try:
+        amount = float(amount)
+    except:
+        return Response({
+            "error": "Invalid amount"
+        }, status=400)
+
+    # ===== MAP FRONTEND TYPE → DB TYPE =====
+    if tx_type == "income":
+        db_type = "credit"
+    else:
+        db_type = "debit"
+
+    try:
+        parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except:
+        return Response({
+            "error": "Invalid date format"
+        }, status=400)
+
+    # ===== CREATE TRANSACTION =====
+    transaction = Transaction.objects.create(
+        user=user,
+        date=parsed_date,
+        description=description,
+        amount=amount,
+        type=db_type,
+        category=category
+    )
+
+    return Response({
+        "status": "success",
+        "transaction": {
+            "id": transaction.id,
+            "date": transaction.date,
+            "desc": transaction.description,
+            "amount": amount if db_type == "credit" else -amount,
+            "type": tx_type,
+            "category": transaction.category
+        }
+    })

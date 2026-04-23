@@ -3,4 +3,4 @@ from .models import Transaction
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'description', 'amount', 'type')
+    list_display = ('user', 'date', 'description', 'amount', 'type', 'category')

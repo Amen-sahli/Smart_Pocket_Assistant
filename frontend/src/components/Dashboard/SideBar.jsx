@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 export default function SideBar({ activeTab, setActiveTab }) {
 
+  const username = localStorage.getItem("username") || "not recognized";
+
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -14,9 +16,9 @@ export default function SideBar({ activeTab, setActiveTab }) {
   
     return(
         <aside className="db-sidebar">
-          <div className="sidebar-brand">
-            <span className="sidebar-brand-dot" />
-            BankAnalyzer
+          <div className="sidebar-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => setActiveTab('Dashboard')}>
+            <span className="sidebar-brand-dot"/>
+            Smart Pocket
           </div>
 
           <div className="sidebar-section">
@@ -36,9 +38,9 @@ export default function SideBar({ activeTab, setActiveTab }) {
 
           <div className="sidebar-bottom">
             <div className="sidebar-user">
-              <div className="sidebar-avatar">JD</div>
-              <div className="sidebar-user-info">
-                <div className="sidebar-user-name">John Doe</div>
+              <div className="sidebar-avatar">{username.charAt(0).toUpperCase() + username.charAt(1).toUpperCase()}</div>
+              <div className="sidebar-user-info">                
+                <div className="sidebar-user-name">{username}</div>
                 <div className="sidebar-user-role">Free plan</div>
               </div>
             </div>

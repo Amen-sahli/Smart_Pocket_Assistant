@@ -8,7 +8,8 @@ def save_transactions_to_db(transactions, user):
             date=transaction.get("date"),
             description=transaction.get("description"),
             amount=transaction.get("amount"),
-            type=transaction.get("type")
+            type=transaction.get("type"),
+            category=transaction.get("category", "")
         )
         transactions_list.append(t)
     Transaction.objects.bulk_create(transactions_list)
