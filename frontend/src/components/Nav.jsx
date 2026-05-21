@@ -5,7 +5,7 @@ export default function Nav() {
         <nav className="hp-nav">
           <a className="hp-nav-brand" href="#">
             <span className="brand-dot" />
-            BankAnalyzer
+            Smart Pocket Assistant
           </a>
           <ul className="hp-nav-links">
             <li><a href="#" onClick={() => scrollTo('home')}>Home</a></li>

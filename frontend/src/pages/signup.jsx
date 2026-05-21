@@ -111,7 +111,7 @@ export default function Signup() {
         <div className="signup-right">
           <div className="signup-brand">
             <span className="signup-brand-dot" />
-            BankAnalyzer
+            Smart Pocket Assistant
           </div>
           <h1 className="signup-headline">
             Take control of<br />your <span>financial story.</span>

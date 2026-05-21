@@ -19,10 +19,10 @@ export default function Dashboard() {
           <header className="db-topbar">
             <div>
               <div className="topbar-title">Dashboard</div>
-              <div className="topbar-subtitle">Monday, April 06, 2026</div>
+              <div className="topbar-subtitle">{new Date().toLocaleTimeString()}</div>
             </div>
             <div className="topbar-right">
-              <span className="topbar-badge">April 2026</span>
+              <span className="topbar-badge">{new Date().toLocaleDateString()}</span>
             </div>
           </header>
 

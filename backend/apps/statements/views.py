@@ -1,5 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+
+from .services.analytics_service import full_analysis
 from .services.save_to_db import save_transactions_to_db
 from .services.pdf_extractor import extract_text_from_pdf
 from .services.parser import extract_transactions_table
@@ -9,6 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Transaction
 from collections import defaultdict
 from datetime import datetime
+from .services.analytics_ai import generate_insights
+
 
 
 @api_view(['GET'])
@@ -296,4 +300,74 @@ def add_transaction(request):
             "type": tx_type,
             "category": transaction.category
         }
+    })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_insights(request):
+    user = request.user
+
+    transactions = Transaction.objects.filter(user=user)
+
+    if not transactions.exists():
+        return Response({
+            "insights": []
+        })
+
+    revenus = sum(t.amount for t in transactions if t.type == "credit")
+    depenses = {}
+
+    for t in transactions:
+        if t.type == "debit":
+            depenses[t.category] = depenses.get(t.category, 0) + t.amount
+
+    total_dep = sum(depenses.values())
+    solde = revenus - total_dep
+
+    # 👉 SIMPLE INSIGHTS (no AI yet)
+    insights = []
+
+    if solde < 0:
+        insights.append({
+            "type": "warning",
+            "icon": "⚠️",
+            "title": "Negative balance",
+            "body": f"You spent more than you earned. Deficit: ${abs(solde):.2f}"
+        })
+
+    if revenus > 0:
+        savings_rate = (solde / revenus) * 100
+        if savings_rate > 20:
+            insights.append({
+                "type": "positive",
+                "icon": "🏆",
+                "title": "Great savings",
+                "body": f"You saved {savings_rate:.1f}% of your income."
+            })
+        elif savings_rate < 10:
+            insights.append({
+                "type": "warning",
+                "icon": "📉",
+                "title": "Low savings",
+                "body": "Try reducing expenses to increase savings."
+            })
+
+    # Top category
+    if depenses:
+        top_cat = max(depenses, key=depenses.get)
+        insights.append({
+            "type": "tip",
+            "icon": "💡",
+            "title": f"High spending on {top_cat}",
+            "body": f"You spent ${depenses[top_cat]:.2f} on {top_cat}. Consider optimizing this."
+        })
+
+    return Response({
+        "revenus": revenus,
+        "depenses": depenses,
+        "total_depenses": total_dep,
+        "solde": solde,
+        "score": 0,
+        "insights": insights
     })

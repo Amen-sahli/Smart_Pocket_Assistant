@@ -14,7 +14,7 @@ export default function Home() {
                       Financial Intelligence
                     </div>
                     <h1 className="hero-title">
-                      Your bank data,<br /><em>finally</em> decoded.
+                      Your Pocket data,<br /><em>finally</em> decoded.
                     </h1>
                     <p className="hero-desc">
                       Upload your bank statements and get a full picture of your finances — spending patterns, income trends, and smart insights in seconds.

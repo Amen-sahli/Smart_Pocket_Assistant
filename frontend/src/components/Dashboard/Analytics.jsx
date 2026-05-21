@@ -13,20 +13,14 @@ import {
 
 import { useEffect } from "react";
 import { getAnalytics } from "../../api/transactions";
+import { getAIInsights } from "../../api/insight";
 
 
 /* ─── PALETTE ─────────────────────────────────────────── */
-const C = { c1:'#01161E', c2:'#124559', c3:'#598392', c4:'#AEC3B0', c5:'#EFF6E0' }
+const C = { c1:'#01161E', c2:'#124559', c3:'#598392', c4:'#43a4d9', c5:'#EFF6E0' }
 const PIE_COLORS = ['#598392','#AEC3B0','#7faab5','#3d6b77','#c9dbc7','#2a4f5e','#8fbfa0']
 
 /* ─── HARD-CODED DATA ─────────────────────────────────── */
-
-const insights = [
-  { type:'warning', title:'High dining spend',        body:'You spent 29% more on Food & Dining this month compared to your 3-month average. Consider meal prepping to reduce costs.',        icon:'🍽️' },
-  { type:'positive',title:'Great savings rate',       body:'Your net savings rate this month is 38.6%, well above the recommended 20%. Keep up the momentum!',                               icon:'🏆' },
-  { type:'tip',     title:'Subscription audit',       body:'You have 6 active recurring subscriptions totaling $214/mo. Review them — canceling 1–2 unused ones could save ~$600/year.',   icon:'🔄' },
-  { type:'warning', title:'December overspend',       body:'December expenses exceeded your budget by $1,200, primarily in Shopping & Entertainment. Plan ahead for seasonal spending.',     icon:'📅' },
-]
 
 /* ─── CHART THEME HELPERS ────────────────────────────── */
 const gridProps   = { stroke:'#59839215', strokeDasharray:'4 4' }
@@ -54,47 +48,55 @@ const PieLabel = ({ cx, cy, midAngle, outerRadius, percent }) => {
 
 
 /* ─── AI INSIGHTS WIDGET ─────────────────────────────── */
-function AIInsights() {
-  const [status, setStatus]   = useState('idle') // idle | loading | done | error
-  const [aiText, setAiText]   = useState([])
+function AIInsights( { initialData = [] } ) {
+
+  const defaultInsights = [
+  {
+    type: "tip",
+    icon: "💡",
+    title: "Generate insights",
+    body: "Click the button to analyze your finances."
+  }
+];
+
+const [aiText, setAIText] = useState(initialData.length > 0 ? initialData : defaultInsights);
+
+  const [status, setStatus] = useState('idle') // idle, loading, done, error
+ 
 
   const generate = async () => {
-    setStatus('loading')
-    setAiText([])
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: `You are a personal finance analyst. Given the following bank statement summary, generate exactly 4 concise financial insights. Return ONLY a valid JSON array — no markdown, no explanation, no backticks.
+  setStatus('loading');
 
-Data:
-- Net balance: $8,340
-- Total income: $14,200 (salary $8,400 + freelance $5,800)
-- Total expenses: $5,860
-- Top expense categories: Housing $1,800, Food $1,420, Shopping $760, Health $480, Transport $540, Entertainment $320, Utilities $340
-- Savings rate: 38.6%
-- Dec had a budget overspend of $1,200
-- 6 active subscriptions totaling $214/mo
-- Spending trend: decreased last 2 months
+  try {
+    const token = localStorage.getItem("token");
+    const data = await getAIInsights(token);
 
-Format each item as: { "type": "positive"|"warning"|"tip", "icon": "<single emoji>", "title": "<short title>", "body": "<2 sentence insight>" }`
-          }],
-        }),
-      })
-      const data = await res.json()
-      const raw = data.content?.map(b => b.text || '').join('') || '[]'
-      const clean = raw.replace(/```json|```/g, '').trim()
-      setAiText(JSON.parse(clean))
-      setStatus('done')
-    } catch (e) {
-      setStatus('error')
-    }
+    console.log("AI DATA:", data);
+
+    const insights = Array.isArray(data)
+      ? data
+      : data.insights || [];
+
+    setAIText(
+      insights.length > 0
+        ? insights
+        : [
+            {
+              type: "tip",
+              icon: "🤖",
+              title: "No insights generated",
+              body: "Try adding more transactions."
+            }
+          ]
+    );
+
+    setStatus('done');
+
+  } catch (err) {
+    console.error(err);
+    setStatus('error');
   }
+};
 
   return (
     <div className="an-chart-card" style={{ height: '100%' }}>
@@ -109,7 +111,7 @@ Format each item as: { "type": "positive"|"warning"|"tip", "icon": "<single emoj
 
       {status === 'idle' && (
         <>
-          {insights.map((ins, i) => (
+          {aiText.map((ins, i) => (
             <div key={i} className={`an-insight-card ${ins.type}`}>
               <span className="an-insight-emoji">{ins.icon}</span>
               <div>
@@ -152,7 +154,7 @@ Format each item as: { "type": "positive"|"warning"|"tip", "icon": "<single emoj
 
       {status === 'error' && (
         <div style={{ color:'#e07070', fontSize:'0.85rem', textAlign:'center', padding:'20px 0' }}>
-          Failed to load AI insights. Check your API key setup.
+          Failed to load AI insights.
           <br />
           <button className="an-gen-btn" onClick={generate} style={{ marginTop:12 }}>
             Try again
@@ -353,7 +355,7 @@ export default function Analytics() {
           </div>
 
           {/* AI Insights */}
-          <AIInsights />
+          <AIInsights initialData={Analytics?.insights || []} />
 
         </div>
       </div>

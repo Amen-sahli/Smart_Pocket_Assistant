@@ -53,7 +53,7 @@ export default function Login() {
         <div className="login-left">
           <div className="login-brand">
             <span className="login-brand-dot" />
-            BankAnalyzer
+            Smart Pocket Assistant
           </div>
           <h1 className="login-headline">
             Your finances,<br /><span>clearly.</span>

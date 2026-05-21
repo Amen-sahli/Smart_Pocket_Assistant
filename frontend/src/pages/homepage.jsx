@@ -13,8 +13,8 @@ export default function Homepage() {
         <Home />
         <Services />
         <footer className="hp-footer">
-          <div className="footer-brand">BankAnalyzer</div>
-          <div className="footer-copy">© 2026 BankAnalyzer · Built with React</div>
+          <div className="footer-brand">Smart Pocket Assistant</div>
+          <div className="footer-copy">© 2026 Smart Pocket Assistant · Built with React</div>
         </footer>
       </div>
     </>
