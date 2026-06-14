@@ -1,4 +1,4 @@
-# 💳 Bank Statement Analyzer
+# 💳 Smart Pocket Assistant
 
 A full-stack web application that allows users to upload bank transactions, analyze spending patterns, and visualize financial insights through an interactive dashboard.
 
