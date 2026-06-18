@@ -141,7 +141,16 @@ Frontend runs on:
 * Siwar
 
 ---
+## 🎞️ Video preview
 
+
+
+https://github.com/user-attachments/assets/771c3f11-d802-4864-984f-fb288c1e5ab1
+
+
+
+
+---
 ## 📄 License
 
 This project is for educational purposes.
