@@ -19,14 +19,14 @@ export default function Dashboard() {
           <header className="db-topbar">
             <div>
               <div className="topbar-title">Dashboard</div>
-              <div className="topbar-subtitle">{new Date().toLocaleTimeString()}</div>
+              <div className="topbar-subtitle">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
             </div>
             <div className="topbar-right">
               <span className="topbar-badge">{new Date().toLocaleDateString()}</span>
             </div>
           </header>
 
-          {/* CONTENT */}
+          {/* CONTENT */}   
           {activeTab === 'Dashboard' && <DashContent />}
           {activeTab === 'Analytics' && <Analytics />}
           

@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500&display=swap");
 :root {
-  --c1: #01161e;
-  --c2: #124559;
-  --c3: #598392;
-  --c4: #aec3b0;
-  --c5: #eff6e0;
+  --c1: #2D3142;
+  --c2: #4F5D75;
+  --c3: #BFC0C0;
+  --c4: #2ECC71;
+  --c5: #FFFFFF;
 }
 
 * {
@@ -31,9 +31,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #01161eee;
+  background: #2D3142ee;
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #59839215;
+  border-bottom: 1px solid #BFC0C015;
 }
 
 .hp-nav-brand {
@@ -74,7 +74,7 @@
 
 .nav-btn {
   background: var(--c2) !important;
-  border: 1px solid #59839244 !important;
+  border: 1px solid #BFC0C044 !important;
   border-radius: 8px !important;
   color: var(--c5) !important;
   padding: 8px 20px !important;
@@ -87,7 +87,7 @@
 }
 
 .nav-btn:hover {
-  background: #1a5a78 !important;
+  background: #4F5D7540 !important;
 }
 
 .nav-btn-accent {
@@ -112,7 +112,7 @@
   right: -80px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, #59839212 0%, transparent 65%);
+  background: radial-gradient(circle, #BFC0C012 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -123,7 +123,7 @@
   left: 20%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, #12455930 0%, transparent 65%);
+  background: radial-gradient(circle, #4F5D7530 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -137,8 +137,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #59839215;
-  border: 1px solid #59839230;
+  background: #BFC0C015;
+  border: 1px solid #BFC0C030;
   border-radius: 20px;
   padding: 6px 16px;
   color: var(--c4);
@@ -214,19 +214,19 @@
 }
 
 .hero-cta:hover {
-  background: #4a7280;
+  background: #27AE60;
   transform: translateY(-2px);
   color: var(--c5);
 }
 
 .hero-cta-ghost {
   background: transparent;
-  border: 1px solid #59839240;
+  border: 1px solid #BFC0C040;
   color: var(--c4);
 }
 
 .hero-cta-ghost:hover {
-  background: #59839210;
+  background: #BFC0C010;
   color: var(--c4);
 }
 
@@ -241,11 +241,11 @@
 
 .float-card {
   background: var(--c2);
-  border: 1px solid #59839230;
+  border: 1px solid #BFC0C030;
   border-radius: 16px;
   padding: 24px;
   width: 280px;
-  box-shadow: 0 20px 60px #01161e80;
+  box-shadow: 0 20px 60px #4F5D7580;
 }
 
 .float-card-label {
@@ -272,7 +272,7 @@
 
 .mini-bar {
   flex: 1;
-  background: #59839230;
+  background: #BFC0C030;
   border-radius: 4px;
   position: relative;
   overflow: hidden;
@@ -296,8 +296,8 @@
   position: absolute;
   top: -40px;
   right: -40px;
-  background: #01161ecc;
-  border: 1px solid #aec3b020;
+  background: #4F5D75cc;
+  border: 1px solid #2ECC7120;
   border-radius: 12px;
   padding: 16px 20px;
   width: 160px;
@@ -326,7 +326,7 @@
   position: relative;
 }
 
-.section-label {
+.hp-services .section-label {
   color: var(--c3);
   font-size: 0.78rem;
   letter-spacing: 0.15em;
@@ -337,14 +337,14 @@
   gap: 10px;
 }
 
-.section-label::before {
+.hp-services .section-label::before {
   content: "";
   width: 24px;
   height: 1px;
   background: var(--c3);
 }
 
-.section-title {
+.hp-services .section-title {
   font-family: "Playfair Display", serif;
   font-size: 2.6rem;
   color: var(--c5);
@@ -353,11 +353,11 @@
   line-height: 1.25;
 }
 
-.section-title span {
+.hp-services .section-title span {
   color: var(--c4);
 }
 
-.section-sub {
+.hp-services .section-sub {
   color: var(--c3);
   font-size: 0.95rem;
   font-weight: 300;
@@ -366,7 +366,7 @@
   margin-bottom: 60px;
 }
 
-.services-grid {
+.hp-services .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
@@ -374,7 +374,7 @@
 
 .service-card {
   background: var(--c2);
-  border: 1px solid #59839220;
+  border: 1px solid #BFC0C020;
   border-radius: 16px;
   padding: 32px;
   transition:
@@ -384,15 +384,15 @@
 }
 
 .service-card:hover {
-  border-color: #59839255;
+  border-color: #BFC0C055;
   transform: translateY(-4px);
 }
 
 .service-icon {
   width: 48px;
   height: 48px;
-  background: #59839215;
-  border: 1px solid #59839230;
+  background: #BFC0C015;
+  border: 1px solid #BFC0C030;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -419,7 +419,7 @@
 /* FOOTER */
 .hp-footer {
   background: var(--c2);
-  border-top: 1px solid #59839215;
+  border-top: 1px solid #BFC0C015;
   padding: 32px 60px;
   display: flex;
   justify-content: space-between;
@@ -465,3 +465,6 @@
     gap: 8px;
   }
 }
+
+
+

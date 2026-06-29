@@ -2,10 +2,10 @@
 
 .an-root {
   padding: 28px 32px;
-  background: #01161E;
+  background: #2D3142;
   min-height: 100%;
   font-family: 'DM Sans', sans-serif;
-  color: #EFF6E0;
+  color: #FFFFFF;
 }
 
 /* Section heading */
@@ -15,11 +15,11 @@
 .an-section-head h2 {
   font-family: 'Playfair Display', serif;
   font-size: 1.25rem;
-  color: #EFF6E0;
+  color: #FFFFFF;
   margin-bottom: 3px;
 }
 .an-section-head p {
-  color: #598392;
+  color: #BFC0C0;
   font-size: 0.8rem;
   font-weight: 300;
 }
@@ -33,15 +33,15 @@
 }
 
 .an-card {
-  background: #124559;
-  border: 1px solid #59839218;
+  background: #4F5D75;
+  border: 1px solid #BFC0C018;
   border-radius: 14px;
   padding: 20px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s, transform 0.18s;
 }
-.an-card:hover { border-color: #59839240; transform: translateY(-2px); }
+.an-card:hover { border-color: #BFC0C040; transform: translateY(-2px); }
 
 .an-card-accent {
   position: absolute;
@@ -52,15 +52,15 @@
 .an-card-icon {
   width: 34px; height: 34px;
   border-radius: 9px;
-  background: #01161e60;
-  border: 1px solid #59839225;
+  background: #2D314260;
+  border: 1px solid #BFC0C025;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.95rem;
   margin-bottom: 14px;
 }
 
 .an-card-label {
-  color: #598392;
+  color: #BFC0C0;
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -68,10 +68,11 @@
 }
 
 .an-card-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.75rem;
-  color: #EFF6E0;
-  margin-bottom: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #FFFFFF;
+  margin-bottom: 4px;
 }
 
 .an-card-change {
@@ -80,7 +81,7 @@
   align-items: center;
   gap: 4px;
 }
-.an-card-change.up   { color: #AEC3B0; }
+.an-card-change.up   { color: #2ECC71; }
 .an-card-change.down { color: #e07070; }
 
 /* Chart grid */
@@ -96,22 +97,22 @@
 }
 
 .an-chart-card {
-  background: #124559;
-  border: 1px solid #59839218;
+  background: #4F5D75;
+  border: 1px solid #BFC0C018;
   border-radius: 14px;
   padding: 22px 24px;
   transition: border-color 0.2s;
 }
-.an-chart-card:hover { border-color: #59839235; }
+.an-chart-card:hover { border-color: #BFC0C035; }
 
 .an-chart-title {
   font-family: 'Playfair Display', serif;
   font-size: 1rem;
-  color: #EFF6E0;
+  color: #FFFFFF;
   margin-bottom: 3px;
 }
 .an-chart-sub {
-  color: #598392;
+  color: #BFC0C0;
   font-size: 0.76rem;
   font-weight: 300;
   margin-bottom: 20px;
@@ -131,28 +132,28 @@
   align-items: center;
   gap: 14px;
   padding: 12px 0;
-  border-bottom: 1px solid #59839212;
+  border-bottom: 1px solid #BFC0C012;
 }
 .an-tx-item:last-child { border-bottom: none; }
 
 .an-tx-icon {
   width: 36px; height: 36px;
   border-radius: 9px;
-  background: #01161e70;
-  border: 1px solid #59839220;
+  background: #2D314270;
+  border: 1px solid #BFC0C020;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.8rem;
   flex-shrink: 0;
 }
-.an-tx-icon.pos { border-color: #AEC3B030; color: #AEC3B0; }
+.an-tx-icon.pos { border-color: #2ECC7130; color: #2ECC71; }
 .an-tx-icon.neg { border-color: #e0707030; color: #e07070; }
 
 .an-tx-info { flex: 1; }
-.an-tx-desc { color: #EFF6E0; font-size: 0.88rem; font-weight: 400; }
-.an-tx-meta { color: #598392; font-size: 0.74rem; margin-top: 2px; }
+.an-tx-desc { color: #FFFFFF; font-size: 0.88rem; font-weight: 400; }
+.an-tx-meta { color: #BFC0C0; font-size: 0.74rem; margin-top: 2px; }
 
 .an-tx-amount { font-size: 0.9rem; font-weight: 500; text-align: right; }
-.an-tx-amount.pos { color: #AEC3B0; }
+.an-tx-amount.pos { color: #2ECC71; }
 .an-tx-amount.neg { color: #e07070; }
 
 /* AI Insights */
@@ -167,25 +168,25 @@
   transition: border-color 0.2s;
 }
 .an-insight-card:last-child { margin-bottom: 0; }
-.an-insight-card:hover { border-color: #59839230; }
+.an-insight-card:hover { border-color: #BFC0C030; }
 .an-insight-card.warning  { background: #e0707010; }
-.an-insight-card.positive { background: #AEC3B010; }
-.an-insight-card.tip      { background: #59839215; }
+.an-insight-card.positive { background: #2ECC7110; }
+.an-insight-card.tip      { background: #BFC0C015; }
 
 .an-insight-emoji { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
-.an-insight-title { color: #EFF6E0; font-size: 0.88rem; font-weight: 500; margin-bottom: 4px; }
-.an-insight-body  { color: #598392; font-size: 0.8rem; font-weight: 300; line-height: 1.6; }
+.an-insight-title { color: #FFFFFF; font-size: 0.88rem; font-weight: 500; margin-bottom: 4px; }
+.an-insight-body  { color: #BFC0C0; font-size: 0.8rem; font-weight: 300; line-height: 1.6; }
 
 /* AI badge */
 .an-ai-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #59839215;
-  border: 1px solid #59839230;
+  background: #BFC0C015;
+  border: 1px solid #BFC0C030;
   border-radius: 20px;
   padding: 4px 12px;
-  color: #AEC3B0;
+  color: #2ECC71;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   margin-bottom: 14px;
@@ -193,7 +194,7 @@
 
 .an-ai-dot {
   width: 5px; height: 5px;
-  background: #AEC3B0;
+  background: #2ECC71;
   border-radius: 50%;
   animation: blink 2s infinite;
 }
@@ -206,7 +207,7 @@
   gap: 10px;
 }
 .an-skeleton {
-  background: #59839215;
+  background: #BFC0C015;
   border-radius: 8px;
   height: 64px;
   animation: shimmer 1.5s infinite;
@@ -216,11 +217,11 @@
 /* Insight generate btn */
 .an-gen-btn {
   width: 100%;
-  background: linear-gradient(135deg, #598392, #3d6b77);
+  background: linear-gradient(135deg, var(--c4), #27AE60);
   border: none;
   border-radius: 9px;
   padding: 11px;
-  color: #EFF6E0;
+  color: #FFFFFF;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
@@ -244,7 +245,7 @@
 }
 .an-legend-item {
   display: flex; align-items: center; gap: 6px;
-  color: #598392; font-size: 0.76rem;
+  color: #BFC0C0; font-size: 0.76rem;
 }
 .an-legend-dot {
   width: 8px; height: 8px;
@@ -261,3 +262,5 @@
   .an-root { padding: 18px 14px; }
   .an-summary-grid { grid-template-columns: 1fr 1fr; }
 }
+
+

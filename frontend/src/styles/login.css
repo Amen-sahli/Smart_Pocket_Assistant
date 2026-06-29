@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap");
 
 :root {
-  --c1: #01161e;
-  --c2: #124559;
-  --c3: #598392;
-  --c4: #aec3b0;
-  --c5: #eff6e0;
+  --c1: #2D3142;
+  --c2: #4F5D75;
+  --c3: #BFC0C0;
+  --c4: #2ECC71;
+  --c5: #FFFFFF;
 }
 
 .login-root {
@@ -24,7 +24,7 @@
   left: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, #12455933 0%, transparent 70%);
+  background: radial-gradient(circle, #4F5D7533 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -35,7 +35,7 @@
   right: -100px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, #59839222 0%, transparent 70%);
+  background: radial-gradient(circle, #BFC0C022 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -128,7 +128,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--c3), var(--c4));
+  background: linear-gradient(90deg, var(--c4), #27AE60);
 }
 
 .login-card {
@@ -177,8 +177,8 @@
 
 .custom-input {
   width: 100%;
-  background: #01161e88 !important;
-  border: 1px solid #59839244 !important;
+  background: #4F5D7588 !important;
+  border: 1px solid #BFC0C044 !important;
   border-radius: 10px !important;
   color: var(--c5) !important;
   padding: 13px 16px 13px 44px !important;
@@ -190,19 +190,19 @@
 }
 
 .custom-input::placeholder {
-  color: #598392aa !important;
+  color: #BFC0C0aa !important;
 }
 
 .custom-input:focus {
   border-color: var(--c3) !important;
-  box-shadow: 0 0 0 3px #59839220 !important;
+  box-shadow: 0 0 0 3px #BFC0C020 !important;
   outline: none !important;
-  background: #01161ecc !important;
+  background: #4F5D75cc !important;
 }
 
 .login-btn {
   width: 100%;
-  background: linear-gradient(135deg, var(--c3), #3d6b77) !important;
+  background: linear-gradient(135deg, var(--c4), #27AE60) !important;
   border: none !important;
   border-radius: 10px !important;
   padding: 14px !important;
@@ -246,7 +246,7 @@
 
 .divider {
   border: none;
-  border-top: 1px solid #59839222;
+  border-top: 1px solid #BFC0C022;
   margin: 30px 0;
 }
 
@@ -258,3 +258,6 @@
     width: 100%;
   }
 }
+
+
+

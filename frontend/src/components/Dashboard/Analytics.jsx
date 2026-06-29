@@ -17,16 +17,14 @@ import { getAIInsights } from "../../api/insight";
 
 
 /* ─── PALETTE ─────────────────────────────────────────── */
-const C = { c1:'#01161E', c2:'#124559', c3:'#598392', c4:'#43a4d9', c5:'#EFF6E0' }
-const PIE_COLORS = ['#598392','#AEC3B0','#7faab5','#3d6b77','#c9dbc7','#2a4f5e','#8fbfa0']
-
-/* ─── HARD-CODED DATA ─────────────────────────────────── */
+const C = { c1:'#2D3142', c2:'#4F5D75', c3:'#BFC0C0', c4:'#2ECC71', c5:'#FFFFFF' }
+const PIE_COLORS = ['#2ECC71','#BFC0C0','#27AE60','#2D3142','#82E0AA','#666666']
 
 /* ─── CHART THEME HELPERS ────────────────────────────── */
-const gridProps   = { stroke:'#59839215', strokeDasharray:'4 4' }
+const gridProps   = { stroke:'#BFC0C015', strokeDasharray:'4 4' }
 const axisProps   = { tick:{ fill:C.c3, fontSize:11, fontFamily:'DM Sans' }, axisLine:false, tickLine:false }
 const tooltipStyle = {
-  contentStyle:{ background:C.c2, border:`1px solid #59839230`, borderRadius:10, fontFamily:'DM Sans', color:C.c5 },
+  contentStyle:{ background:C.c2, border:`1px solid #BFC0C030`, borderRadius:10, fontFamily:'DM Sans', color:C.c5 },
   labelStyle:  { color:C.c4, fontWeight:500 },
   itemStyle:   { color:C.c5 },
 }
