@@ -145,7 +145,10 @@ Frontend runs on:
 
 
 
-https://github.com/user-attachments/assets/771c3f11-d802-4864-984f-fb288c1e5ab1
+
+
+https://github.com/user-attachments/assets/ff77d363-1a11-4180-800c-33d5fa94ce3e
+
 
 
 
