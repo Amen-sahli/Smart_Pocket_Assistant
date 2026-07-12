@@ -1,9 +1,7 @@
-export default async function getTransactions (token) {
-  const response = await fetch("http://localhost:8000/api/statements/list/", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
+import { authFetch } from "./auth";
+
+export default async function getTransactions() {
+  const response = await authFetch("http://localhost:8000/api/statements/list/");
 
   const data = await response.json();
 
@@ -12,16 +10,11 @@ export default async function getTransactions (token) {
   }
 
   return data;
-};
+}
 
 
-
-export async function getStats(token){
-  const response = await fetch("http://localhost:8000/api/statements/stats/", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
+export async function getStats() {
+  const response = await authFetch("http://localhost:8000/api/statements/stats/");
 
   const data = await response.json();
 
@@ -30,15 +23,11 @@ export async function getStats(token){
   }
 
   return data;
-};
+}
 
 
-export const getAnalytics = async (token) => {
-  const res = await fetch("http://localhost:8000/api/statements/analytics/", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
+export const getAnalytics = async () => {
+  const res = await authFetch("http://localhost:8000/api/statements/analytics/");
 
   const data = await res.json();
 
@@ -47,12 +36,11 @@ export const getAnalytics = async (token) => {
   return data;
 };
 
-export const addTransaction = async (data, token) => {
-  const res = await fetch("http://localhost:8000/api/statements/add/", {
+export const addTransaction = async (data) => {
+  const res = await authFetch("http://localhost:8000/api/statements/add/", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });

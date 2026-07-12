@@ -66,8 +66,7 @@ const [aiText, setAIText] = useState(initialData.length > 0 ? initialData : defa
   setStatus('loading');
 
   try {
-    const token = localStorage.getItem("token");
-    const data = await getAIInsights(token);
+    const data = await getAIInsights();
 
     console.log("AI DATA:", data);
 
@@ -171,11 +170,9 @@ export default function Analytics() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-
   async function fetchData() {
     try {
-      const res = await getAnalytics(token);
+      const res = await getAnalytics();
       setData(res);
     } catch (err) {
       console.error(err);
@@ -185,7 +182,7 @@ export default function Analytics() {
   fetchData();
 }, []);
 
-  const summaryCards = [ { label:'Net Balance', value:'$' + formatMoney(data?.summary.balance)>0 ? formatMoney(data?.summary.balance) : '0', change:'+12.4%', up:true, icon:<FiDollarSign/>, accent:C.c3 }, { label:'Total Income', value:'$' + formatMoney(data?.summary.income), change:'+8.2%', up:true, icon:<FiTrendingUp/>, accent:C.c4 }, { label:'Total Expenses', value:'$' + formatMoney(data?.summary.expenses), change:'+3.1%', up:false, icon:<FiTrendingDown/>,accent:'#e07070'}, { label:'Avg. Daily Spend',value:'$' + formatMoney(data?.summary.avg_daily), change:'-5.6%', up:true, icon:<FiCreditCard/>, accent:C.c4 }, ]
+  const summaryCards = [ { label:'Net Balance', value:'$' + formatMoney(data?.summary.balance), change:'+12.4%', up:true, icon:<FiDollarSign/>, accent:C.c3 }, { label:'Total Income', value:'$' + formatMoney(data?.summary.income), change:'+8.2%', up:true, icon:<FiTrendingUp/>, accent:C.c4 }, { label:'Total Expenses', value:'$' + formatMoney(data?.summary.expenses), change:'+3.1%', up:false, icon:<FiTrendingDown/>,accent:'#e07070'}, { label:'Avg. Daily Spend',value:'$' + formatMoney(data?.summary.avg_daily), change:'-5.6%', up:true, icon:<FiCreditCard/>, accent:C.c4 }, ]
   const pieData = data?.pie || []
   const spendingLine = data?.line || []
   const categoryBar = data?.bar || []

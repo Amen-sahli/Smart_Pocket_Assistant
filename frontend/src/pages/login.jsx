@@ -24,8 +24,8 @@ export default function Login() {
       const data = await loginUser(email, password);
 
       localStorage.setItem("token", data.access);
+      localStorage.setItem("refresh", data.refresh);
       localStorage.setItem("username", data.username);
-      alert("Login successful!");
 
       navigate("/dashboard");
 

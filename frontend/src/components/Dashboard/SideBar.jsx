@@ -10,6 +10,8 @@ export default function SideBar({ activeTab, setActiveTab }) {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("username");
     navigate("/");
   }
 

@@ -11,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Transaction
 from collections import defaultdict
 from datetime import datetime
-from .services.analytics_ai import generate_insights
 
 
 
@@ -250,6 +249,8 @@ def add_transaction(request):
 
     date = data.get("date")
     description = data.get("desc")
+    if description:
+        description = description.strip()
     amount = data.get("amount")
     tx_type = data.get("type")  # "income" or "expense"
     category = data.get("category", "Other")
@@ -315,59 +316,5 @@ def get_insights(request):
             "insights": []
         })
 
-    revenus = sum(t.amount for t in transactions if t.type == "credit")
-    depenses = {}
-
-    for t in transactions:
-        if t.type == "debit":
-            depenses[t.category] = depenses.get(t.category, 0) + t.amount
-
-    total_dep = sum(depenses.values())
-    solde = revenus - total_dep
-
-    # 👉 SIMPLE INSIGHTS (no AI yet)
-    insights = []
-
-    if solde < 0:
-        insights.append({
-            "type": "warning",
-            "icon": "⚠️",
-            "title": "Negative balance",
-            "body": f"You spent more than you earned. Deficit: ${abs(solde):.2f}"
-        })
-
-    if revenus > 0:
-        savings_rate = (solde / revenus) * 100
-        if savings_rate > 20:
-            insights.append({
-                "type": "positive",
-                "icon": "🏆",
-                "title": "Great savings",
-                "body": f"You saved {savings_rate:.1f}% of your income."
-            })
-        elif savings_rate < 10:
-            insights.append({
-                "type": "warning",
-                "icon": "📉",
-                "title": "Low savings",
-                "body": "Try reducing expenses to increase savings."
-            })
-
-    # Top category
-    if depenses:
-        top_cat = max(depenses, key=depenses.get)
-        insights.append({
-            "type": "tip",
-            "icon": "💡",
-            "title": f"High spending on {top_cat}",
-            "body": f"You spent ${depenses[top_cat]:.2f} on {top_cat}. Consider optimizing this."
-        })
-
-    return Response({
-        "revenus": revenus,
-        "depenses": depenses,
-        "total_depenses": total_dep,
-        "solde": solde,
-        "score": 0,
-        "insights": insights
-    })
+    result = full_analysis(transactions)
+    return Response(result)

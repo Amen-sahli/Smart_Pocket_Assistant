@@ -1,12 +1,11 @@
-export default async function upload(file, token) {
+import { authFetch } from "./auth";
+
+export default async function upload(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("http://localhost:8000/api/statements/upload/", {
+  const response = await authFetch("http://localhost:8000/api/statements/upload/", {
     method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token
-    },
     body: formData
   });
 
@@ -17,4 +16,4 @@ export default async function upload(file, token) {
   }
 
   return data;
-};
+}

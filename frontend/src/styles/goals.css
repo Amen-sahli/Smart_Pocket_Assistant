@@ -328,10 +328,23 @@
 }
 
 .tx-submit-row {
-  grid-column: 1 / -1;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
+
+.tx-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 7px;
+}
+.tx-feedback.success { color: #2ECC71; background: #2ECC7115; }
+.tx-feedback.error   { color: #e07070; background: #e0707015; }
 
 .tx-submit-btn {
   display: inline-flex; align-items: center; gap: 8px;
@@ -345,6 +358,7 @@
   transition: opacity 0.18s, transform 0.15s;
 }
 .tx-submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.tx-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 @media (max-width: 900px) {
   .tx-manual-body { grid-template-columns: 1fr 1fr; }

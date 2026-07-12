@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import {
   FiUploadCloud, FiTrendingUp, FiTrendingDown, FiDollarSign,
   FiPlus, FiTrash2, FiCheck, FiX, FiEdit3,
-  FiGrid, FiDownload, FiTarget
+  FiGrid, FiDownload, FiTarget, FiAlertCircle, FiCheckCircle
 } from 'react-icons/fi'
 import upload from '../../api/upload'
 import getTransactions, { getStats } from '../../api/transactions'
@@ -90,13 +90,14 @@ function AddGoalForm({ onAdd, onCancel }) {
   )
 }
 
-function ManualTransactionForm({ onAdd }) {
+function ManualTransactionForm({ onAdd, feedback, setFeedback, submitting }) {
   const today = new Date().toISOString().split('T')[0]
   const [form, setForm] = useState({ date: today, desc: '', amount: '', type: 'expense', category: 'Food' })
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleSubmit = () => {
     if (!form.desc || !form.amount || isNaN(Number(form.amount))) return
+    setFeedback(null)
     onAdd({ ...form, amount: Number(form.amount) })
     setForm({ date: today, desc:'', amount:'', type:'expense', category:'Food' })
   }
@@ -140,7 +141,15 @@ function ManualTransactionForm({ onAdd }) {
           <input className="form-input" type="text" placeholder="e.g. Grocery run at Carrefour" value={form.desc} onChange={e => set('desc', e.target.value)} />
         </div>
         <div className="tx-submit-row">
-          <button className="tx-submit-btn" onClick={handleSubmit}><FiPlus size={15}/> Add Transaction</button>
+          {feedback && (
+            <div className={`tx-feedback ${feedback.type}`}>
+              {feedback.type === 'success' ? <FiCheckCircle size={14}/> : <FiAlertCircle size={14}/>}
+              {feedback.text}
+            </div>
+          )}
+          <button className="tx-submit-btn" onClick={handleSubmit} disabled={submitting}>
+            <FiPlus size={15}/> {submitting ? 'Adding...' : 'Add Transaction'}
+          </button>
         </div>
       </div>
     </div>
@@ -209,7 +218,7 @@ function OverviewTab({ stats, transactions }) {
   )
 }
 
-function ImportTab({ file, setFile, handleUpload, handleAdd }) {
+function ImportTab({ file, setFile, handleUpload, handleAdd, feedback, setFeedback, submitting }) {
   return (
     <>
       <div className="upload-card">
@@ -232,7 +241,7 @@ function ImportTab({ file, setFile, handleUpload, handleAdd }) {
         </div>
       </div>
 
-      <ManualTransactionForm onAdd={handleAdd} />
+      <ManualTransactionForm onAdd={handleAdd} feedback={feedback} setFeedback={setFeedback} submitting={submitting} />
     </>
   )
 }
@@ -284,13 +293,14 @@ export default function DashContent() {
     { id:3, amount:500, period:'3 months',category:'Shopping',  spent:520 },
   ])
   const [showGoalForm, setShowGoalForm] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [feedback, setFeedback] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
     async function fetchData() {
       try {
-        const data = await getTransactions(token)
-        const statsData = await getStats(token)
+        const data = await getTransactions()
+        const statsData = await getStats()
         setStats(statsData)
         setTransactions(data)
       } catch (err) { console.error(err) }
@@ -299,13 +309,12 @@ export default function DashContent() {
   }, [])
 
   async function handleUpload() {
-    const token = localStorage.getItem('token')
     try {
-      await upload(file, token)
+      await upload(file)
       alert('Upload successful!')
       setFile(null)
-      const data = await getTransactions(token)
-      const statsData = await getStats(token)
+      const data = await getTransactions()
+      const statsData = await getStats()
       setTransactions(data)
       setStats(statsData)
     } catch (error) { alert(error.message) }
@@ -321,12 +330,23 @@ export default function DashContent() {
   }
 
   async function handleAdd(tx) {
-    const token = localStorage.getItem("token")
+    setSubmitting(true)
     try {
-      const res = await addTransaction(tx, token)
-      setTransactions(prev => [res.transaction, ...prev])
+      await addTransaction(tx)
+      const [txList, statsData] = await Promise.all([
+        getTransactions(),
+        getStats()
+      ])
+      setTransactions(txList)
+      setStats(statsData)
+      setFeedback({ type:'success', text:'Transaction added successfully' })
+      setTimeout(() => setFeedback(null), 3000)
+      setSection('overview')
     } catch (err) {
-      alert(err.message)
+      setFeedback({ type:'error', text: err.message })
+      setTimeout(() => setFeedback(null), 5000)
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -353,7 +373,7 @@ export default function DashContent() {
       )}
 
       {section === 'import' && (
-        <ImportTab file={file} setFile={setFile} handleUpload={handleUpload} handleAdd={handleAdd} />
+        <ImportTab file={file} setFile={setFile} handleUpload={handleUpload} handleAdd={handleAdd} feedback={feedback} setFeedback={setFeedback} submitting={submitting} />
       )}
 
       {section === 'goals' && (

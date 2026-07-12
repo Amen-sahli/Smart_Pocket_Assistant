@@ -20,7 +20,7 @@ export const loginUser = async (email, password) => {
 
 
 export const registerUser = async (username, email, password) => {
-  const response = await fetch("http://localhost:8000/api/auth/register/", {
+  const response = await fetch(`${API_URL}/register/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -41,4 +41,57 @@ export const registerUser = async (username, email, password) => {
   }
 
   return data;
+};
+
+const refreshAccessToken = async () => {
+  const refresh = localStorage.getItem("refresh");
+  if (!refresh) return null;
+
+  const res = await fetch(`${API_URL}/token/refresh/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh })
+  });
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  localStorage.setItem("token", data.access);
+  return data.access;
+};
+
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("refresh");
+  localStorage.removeItem("username");
+  window.location.href = "/";
+};
+
+export const authFetch = async (url, options = {}) => {
+  const token = localStorage.getItem("token");
+
+  const headers = { ...options.headers };
+  if (token) {
+    headers["Authorization"] = "Bearer " + token;
+  }
+
+  let res = await fetch(url, { ...options, headers });
+
+  if (res.status === 401) {
+    const newToken = await refreshAccessToken();
+    if (!newToken) {
+      logout();
+      throw new Error("Session expired");
+    }
+
+    headers["Authorization"] = "Bearer " + newToken;
+    res = await fetch(url, { ...options, headers });
+
+    if (res.status === 401) {
+      logout();
+      throw new Error("Session expired");
+    }
+  }
+
+  return res;
 };
