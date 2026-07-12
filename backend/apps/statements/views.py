@@ -124,6 +124,26 @@ def get_transactions(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def get_all_transactions(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+
+    data = [
+        {
+            "id": t.id,
+            "date": t.date,
+            "desc": t.description,
+            "amount": t.amount,
+            "type": "income" if t.type == "credit" else "expense",
+            "category": t.category
+        }
+        for t in transactions
+    ]
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_stats(request):
     transactions = Transaction.objects.filter(user=request.user)
     total_income = sum(t.amount for t in transactions if t.type == "credit")

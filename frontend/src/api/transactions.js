@@ -53,3 +53,13 @@ export const addTransaction = async (data) => {
 
   return result;
 };
+
+export const getAllTransactions = async () => {
+  const res = await authFetch("http://localhost:8000/api/statements/all/");
+
+  const data = await res.json();
+
+  if (!res.ok) throw new Error("Failed to fetch transactions");
+
+  return data;
+};

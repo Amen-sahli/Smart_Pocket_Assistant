@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import {
   FiUploadCloud, FiTrendingUp, FiTrendingDown, FiDollarSign,
   FiPlus, FiTrash2, FiCheck, FiX, FiEdit3,
-  FiGrid, FiDownload, FiTarget, FiAlertCircle, FiCheckCircle
+  FiGrid, FiDownload, FiTarget, FiAlertCircle, FiCheckCircle,
+  FiArrowLeft, FiSearch, FiChevronRight
 } from 'react-icons/fi'
 import upload from '../../api/upload'
-import getTransactions, { getStats } from '../../api/transactions'
+import getTransactions, { getStats, getAllTransactions } from '../../api/transactions'
 import '../../styles/goals.css'
 import { addTransaction } from "../../api/transactions";
 
@@ -96,7 +97,11 @@ function ManualTransactionForm({ onAdd, feedback, setFeedback, submitting }) {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const handleSubmit = () => {
-    if (!form.desc || !form.amount || isNaN(Number(form.amount))) return
+    if (!form.desc || !form.amount || isNaN(Number(form.amount))) {
+      setFeedback({ type:'error', text:'Please fill in description and a valid amount.' })
+      setTimeout(() => setFeedback(null), 4000)
+      return
+    }
     setFeedback(null)
     onAdd({ ...form, amount: Number(form.amount) })
     setForm({ date: today, desc:'', amount:'', type:'expense', category:'Food' })
@@ -156,7 +161,7 @@ function ManualTransactionForm({ onAdd, feedback, setFeedback, submitting }) {
   )
 }
 
-function OverviewTab({ stats, transactions }) {
+function OverviewTab({ stats, transactions, onMore }) {
   const formatMoney = (num) => Number(num || 0).toLocaleString()
 
   return (
@@ -183,7 +188,12 @@ function OverviewTab({ stats, transactions }) {
             <div className="table-title">Recent Transactions</div>
             <div className="table-sub">Entries from your statement</div>
           </div>
-          <span className="table-tag">{transactions.length} transactions</span>
+          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+            <span className="table-tag">{transactions.length} transactions</span>
+            <button className="more-btn" onClick={onMore}>
+              More... <FiChevronRight size={14} />
+            </button>
+          </div>
         </div>
         <table>
           <thead>
@@ -218,6 +228,103 @@ function OverviewTab({ stats, transactions }) {
   )
 }
 
+function AllTransactions({ onBack }) {
+  const [transactions, setTransactions] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
+
+  useEffect(() => {
+    async function fetchAll() {
+      try {
+        const data = await getAllTransactions()
+        setTransactions(data)
+      } catch { /* handled by authFetch */ }
+      setLoading(false)
+    }
+    fetchAll()
+  }, [])
+
+  const filtered = transactions.filter(tx => {
+    const matchSearch = !search ||
+      tx.desc?.toLowerCase().includes(search.toLowerCase()) ||
+      tx.category?.toLowerCase().includes(search.toLowerCase()) ||
+      tx.date?.toString().includes(search)
+    const matchType = filter === 'all' || tx.type === filter
+    return matchSearch && matchType
+  })
+
+  return (
+    <div className="table-card">
+      <div className="table-header">
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <button className="back-btn" onClick={onBack}>
+            <FiArrowLeft size={15} />
+          </button>
+          <div>
+            <div className="table-title">All Transactions</div>
+            <div className="table-sub">{filtered.length} of {transactions.length} transactions</div>
+          </div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <div className="search-wrap">
+            <FiSearch size={14} />
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+          <select className="filter-select" value={filter} onChange={e => setFilter(e.target.value)}>
+            <option value="all">All</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="tx-loading">Loading...</div>
+      ) : filtered.length === 0 ? (
+        <div className="tx-empty">
+          <span>📭</span> No transactions found.
+        </div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((tx) => (
+              <tr key={tx.id}>
+                <td>{tx.date}</td>
+                <td className="td-desc">{tx.desc}</td>
+                <td className={tx.type === 'income' ? 'amount-positive' : 'amount-negative'}>
+                  {tx.type === 'income' ? `+$${tx.amount}` : `-$${Math.abs(tx.amount)}`}
+                </td>
+                <td>
+                  <span className={`badge ${tx.type === 'income' ? 'badge-income' : 'badge-expense'}`}>
+                    {tx.type === 'income' ? 'Income' : 'Expense'}
+                  </span>
+                </td>
+                <td>{tx.category?.length > 0 ? tx.category : '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
 function ImportTab({ file, setFile, handleUpload, handleAdd, feedback, setFeedback, submitting }) {
   return (
     <>
@@ -240,6 +347,8 @@ function ImportTab({ file, setFile, handleUpload, handleAdd, feedback, setFeedba
           </button>
         </div>
       </div>
+
+      
 
       <ManualTransactionForm onAdd={handleAdd} feedback={feedback} setFeedback={setFeedback} submitting={submitting} />
     </>
@@ -295,6 +404,7 @@ export default function DashContent() {
   const [showGoalForm, setShowGoalForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState(null)
+  const [viewAll, setViewAll] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -303,21 +413,29 @@ export default function DashContent() {
         const statsData = await getStats()
         setStats(statsData)
         setTransactions(data)
-      } catch (err) { console.error(err) }
+      } catch {
+        setFeedback({ type:'error', text:'Failed to load data. Please try again.' })
+        setTimeout(() => setFeedback(null), 5000)
+      }
     }
     fetchData()
   }, [])
 
   async function handleUpload() {
+    setFeedback(null)
     try {
       await upload(file)
-      alert('Upload successful!')
+      setFeedback({ type:'success', text:'Upload successful!' })
+      setTimeout(() => setFeedback(null), 3000)
       setFile(null)
       const data = await getTransactions()
       const statsData = await getStats()
       setTransactions(data)
       setStats(statsData)
-    } catch (error) { alert(error.message) }
+    } catch (error) {
+      setFeedback({ type:'error', text: error.message })
+      setTimeout(() => setFeedback(null), 5000)
+    }
   }
 
   function handleAddGoal(goal) {
@@ -369,7 +487,9 @@ export default function DashContent() {
       </div>
 
       {section === 'overview' && (
-        <OverviewTab stats={stats} transactions={transactions} />
+        viewAll
+          ? <AllTransactions onBack={() => setViewAll(false)} />
+          : <OverviewTab stats={stats} transactions={transactions} onMore={() => setViewAll(true)} />
       )}
 
       {section === 'import' && (

@@ -8,6 +8,7 @@ import { useState } from 'react'
 export default function Signup() {
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const Navigate = useNavigate();
 
   async function handlesignup(e) {
@@ -24,8 +25,8 @@ export default function Signup() {
 
     try {
       await registerUser(username, email, password);
-      alert("Registration successful! Please log in.");
-      Navigate("/login");
+      setSuccess("Account created! Redirecting to login...");
+      setTimeout(() => Navigate("/login"), 1500);
     } catch (error) {
       setError(error.message);
     }
@@ -93,6 +94,7 @@ export default function Signup() {
             </div>
           
             {error && <p style={{ whiteSpace: 'pre-line', color: '#ff4d4d',textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>{error}</p>}
+            {success && <p style={{ color: '#2ECC71', textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>{success}</p>}
 
             <button className="signup-btn" type="submit">
                 Create Account <FiArrowRight />
