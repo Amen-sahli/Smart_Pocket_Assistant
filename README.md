@@ -8,6 +8,9 @@ A Full-Stack web application that allows users to upload bank transactions, anal
 
 * 🔐 User authentication (login/register)
 * 📄 Upload bank statements (CSV format)
+  sample CSV : [releve_bancaire_exemple.pdf](https://github.com/user-attachments/files/34289870/releve_bancaire_exemple.pdf)
+
+
 * 🗄️ Store and manage transactions
 * 📊 Interactive dashboard (charts & summaries)
 * 🤖 Smart insights (basic AI analysis)
