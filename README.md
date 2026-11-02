@@ -1,6 +1,6 @@
 # 💳 Smart Pocket Assistant
 
-A full-stack web application that allows users to upload bank transactions, analyze spending patterns, and visualize financial insights through an interactive dashboard.
+A Full-Stack web application that allows users to upload bank transactions, analyze spending patterns, and visualize financial insights through an interactive dashboard.
 
 ---
 
@@ -12,6 +12,23 @@ A full-stack web application that allows users to upload bank transactions, anal
 * 📊 Interactive dashboard (charts & summaries)
 * 🤖 Smart insights (basic AI analysis)
 * 📈 Spending categorization and trends
+
+---
+
+## 🎞️ Video preview
+
+
+
+
+
+
+
+https://github.com/user-attachments/assets/3f3b5ad5-97bd-4974-b144-37b307168444
+
+
+
+
+
 
 ---
 
@@ -33,7 +50,7 @@ A full-stack web application that allows users to upload bank transactions, anal
 ## 📁 Project Structure
 
 ```
-bank-statement-analyzer/
+smart-pocket-assistant/
 │
 ├── backend/        # Django API
 ├── frontend/       # React (Vite)
@@ -48,8 +65,8 @@ bank-statement-analyzer/
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/Amen-sahli/bank-statement-analyzer.git
-cd bank-statement-analyzer
+git clone https://github.com/Amen-sahli/Smart_Pocket_Assistant.git
+cd smart-pocket-assistant
 ```
 
 ---
@@ -141,22 +158,7 @@ Frontend runs on:
 * Siwar
 
 ---
-## 🎞️ Video preview
 
-
-
-
-
-
-
-https://github.com/user-attachments/assets/3f3b5ad5-97bd-4974-b144-37b307168444
-
-
-
-
-
-
----
 ## 📄 License
 
 This project is for educational purposes.
